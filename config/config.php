@@ -1,37 +1,34 @@
 <?php
-
 session_start();
 
-require_once('../includes/activity-logger.php');
+require_once(__DIR__ . '/../includes/activity-logger.php');
 
 define('BASE_URL', 'http://localhost/it34a');
+
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'it34a');
 define('DB_USER', 'root');
 define('DB_PASS', '');
 
-$user_id = "root";
-$user_email = "root";
+$user_id = "root" ?? null;
+$user_email = "root" ?? null;
 
 try {
     $pdo = new PDO(
         "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME,
         DB_USER,
         DB_PASS,
-        [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
-        ]
+        [PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION]
     );
 
-    echo "Connection Successful";
-
-    logActivity(
+    $success = logActivity(
         $pdo,
         $user_id,
         $user_email,
-        'connect_db',
+        'db_connect',
         'success'
     );
+
 
 } catch (PDOException $e) {
     die("Connection Failed: " . $e->getMessage());
