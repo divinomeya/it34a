@@ -1,7 +1,5 @@
 <?php
-require_once('config/config.php');
-require_once('config/functions.php');
-require_once('includes/activity-logger.php');
+require_once __DIR__ .'/../config/config.php';
 
 $user_id = "root" ?? null;
 $user_email = "root" ?? null;
