@@ -1,69 +1,55 @@
 <?php
-require_once('config/config.php');
+require 'config/config.php';
+require 'config/functions.php';
 
-$user_id = "root" ?? null;
-$user_email = "root" ?? null;
+if(isset($_SESSION['user_id'])){
+    header('Location: '. BASE_URL . '/app/' . $_SESSION['user_role']. '/index.php');
+    exit;
+}
 
-//
-$button =[
-'login',
-'logout',
-'Create Record',
-'Update Record',
-'Delete Record',
-'view record',
-'Upload File',
-'Download',
-'Search',
-'Generate Report'
-];
+$error ='';
 
-
-?>
-
-<table border="1" cellpading="10">
-    <tr>
-        <th>Action</th>
-        <th>Test</th>
-</tr>
-<?php foreach($button as $button): ?>
-<tr> <td> <?= htmlspecialchars($button)?></td>
-<td>
-
- <form method ="post">
-    <input type="hidden" name="action"
-    value="<?= htmlspecialchars($button)?>">
-    <button type="submit">test</button>
-</form>
-</td>
-</tr>
-<?php endforeach;?>
-</table>
-
-<?php
 if($_SERVER['REQUEST_METHOD'] === 'POST'){
+    $login = trim($_POST['login'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-$action = $_POST['action'] ?? "test_activity";
-
-$status = random_int(0,1) ===1? 'success' : 'failed';
-$success = logActivity(
-    $pdo,
-    $user_id,
-    $user_email,
-    $action,
-    $status
-);
-
-if ($success){
-    echo"<p> Activity: ", htmlspecialchars($action) .
-    "status: " . htmlspecialchars($status) . 
-    "log inserted succesfully</p>";
-
-
-    }else{
-        echo"<p>failed to insert log</p>";
+    if(loginUser($pdo, $login, $password)){
+        header('Location: ' . BASE_URL . '/app/' . $_SESSION['user_role'] . '/index.php');
+        exit;
 
     }
-
+    $error = 'Invalid login credentials';
 }
 ?>
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <?php if($error): ?>
+        <p><?= htmlspecialchars($error)?></p>
+    <?php endif; ?>
+    <h1>User Login</h1>
+
+    <form method="POST">
+       <label> Username or email </label>
+       <input type ="text"
+       name="login"
+       required
+       >
+       <br>
+       <label>Password</label>
+       <input type="password"
+       name="password"
+       required
+       >
+       <br>
+       <button type="submit">sign in</button>
+</form>
+</body>
+</html>
