@@ -54,7 +54,8 @@ function requireLogin(){
         header('Location: ', BASE_URL . '/index.php');
         exit;
     }
-}
+     checkSessionTimeout();
+};
 
 function requireRole($role){
     requireLogin();
@@ -63,6 +64,7 @@ function requireRole($role){
         http_response_code(40);
         die('Access denied');
     }
+   
 }
 
 ?>
