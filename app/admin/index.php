@@ -3,12 +3,8 @@ require_once '../../config/config.php';
 
 requireRole('admin');
 
-logActivity(
-    $pdo,
-    $_SESSION['user_id'],
-    $_SESSION['user_email'],
-    'view_activity_logs'
-);
+$section = $_GET['section'] ?? 'activity_logs';
+$section = $_GET['action'] ?? '';
 
 #Query #3 Get All Activity Logs
 $stmt = $pdo->query("
@@ -18,6 +14,37 @@ $stmt = $pdo->query("
 ");
 
 $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+if($action == 'export'){
+    if($section == .'activity-logs'){}
+    $stmt = $pdo->query("
+    SELECT *
+        activity_log_id,
+        user_id,
+        user_email,
+        activity_log_action,
+        activity_log_status,
+        activity_log_ip_address,
+        activity_log_user_agent,
+        activity_log_created_at,
+    FROM activity_logs
+    ORDER BY activity_log_created_at
+    ");
+    $rows = $stmt->fetchAll(PDO:FETCH_ASSOC);
+
+    logActivity(
+    $pdo,
+    $_SESSION['user_id'],
+    $_SESSION['user_email'],
+    'export_activity_logs',
+    'success'
+);
+
+exportCsv(
+'activity_logs',
+[
+    'Record ID', User ID', 'User Email', Action
+],
 
 ?>
 
@@ -32,7 +59,10 @@ $activities = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <h1>Hello Admin</h1>
   <a href="<?= BASE_URL ?>/auth/signout.php">Sign Out</a>
 
-
+<?php if($section==='activity-logs'):?>
+    <h4>Activity logs
+        <a href="index.php?section=activity-logs&amp;action=export">Export CSV</a>
+        <h4>
     <table border="1">
         <thead>
             <tr>
