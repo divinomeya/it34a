@@ -10,15 +10,19 @@ require_once(__DIR__ . '/../functions/csv.php');
 
 
 
+require_once(__DIR__ . '/../vendor/autoload.php');
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv -> load();
+
+define('DB_HOST', $_ENV['DB_HOST']?? ' ');
+define('DB_NAME', $_ENV['DB_NAME']?? ' ');
+define('DB_USER', $_ENV['DB_USER']?? ' ');
+define('DB_PASS', $_ENV['DB_PASS']?? ' ');
 
 define('BASE_URL', 'http://localhost/it34a-1');
 
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'it34a');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-
-
+$user_id = "root" ?? null;
+$user_email  = "root" ?? null;
 
 try {
     $pdo = new PDO(
